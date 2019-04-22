@@ -13,9 +13,13 @@ type Encoder struct {
 
 // NewDecoder
 func NewEncoder(w io.Writer) *Encoder {
-	return &Encoder{
-		w: bufio.NewWriter(w),
+	e := &Encoder{}
+	if wr, ok := w.(*bufio.Writer); ok {
+		e.w = wr
+	} else {
+		e.w = bufio.NewWriter(w)
 	}
+	return e
 }
 
 // Token write token

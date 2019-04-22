@@ -6,9 +6,6 @@ import (
 	"io"
 )
 
-// Token
-type Token interface{}
-
 // A ParseError is returned for parsing errors.
 // Line numbers are 1-indexed and columns are 0-indexed.
 type ParseError struct {
@@ -29,9 +26,13 @@ type Decoder struct {
 
 // NewDecoder new a decoder
 func NewDecoder(r io.Reader) *Decoder {
-	return &Decoder{
-		r: bufio.NewReader(r),
+	d := &Decoder{}
+	if rr, ok := r.(*bufio.Reader); ok {
+		d.r = rr
+	} else {
+		d.r = bufio.NewReader(r)
 	}
+	return d
 }
 
 // Token get next token
